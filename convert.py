@@ -5,7 +5,7 @@ import torch.optim as optim
 import numpy as np
 import cv2
 from torchvision import transforms
-from src.classificationNet import TinyTrafficSignNet
+from src.classificationNet import TinyTrafficSignNet, ClassificationNet
 
 # Set up device
 if torch.cuda.is_available():
@@ -19,13 +19,13 @@ else:
     print("Using CPU")
 
 # Load the trained model
-model = TinyTrafficSignNet(num_classes=7).to(device)
-model.load_state_dict(torch.load('Models/traffic_signs/best_model_epoch_50.pth', map_location=device))
+model = ClassificationNet(num_classes=9).to(device)
+model.load_state_dict(torch.load('Models/traffic_signs/best_modelSEAME_epoch_99.pth', map_location=device))
 model.eval()
 
-dummy_input = torch.randn(1, 3, 30, 30).to(device)  # Updated for 30x30 traffic sign input
+dummy_input = torch.randn(1, 3, 60, 60).to(device)  # Updated for 30x30 traffic sign input
 
-onnx_file_path = "Models/onnx/traffic_sign_model.onnx"
+onnx_file_path = "Models/onnx/traffic_sign_model2.onnx"
 torch.onnx.export(
     model,                       # PyTorch model instance
     dummy_input,                 # Input to the model

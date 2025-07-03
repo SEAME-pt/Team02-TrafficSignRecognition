@@ -26,7 +26,10 @@ class SEAMEDataset(Dataset):
             "Stop",              # 3
             "Danger",            # 4
             "Crosswalk",         # 5
-            "Unknown"            # 6
+            "Traffic Green",     # 6
+            "Traffic Red",       # 7
+            "Traffic Yellow",    # 8
+            # "Unknown"            # 6
         ]
 
 
@@ -45,9 +48,9 @@ class SEAMEDataset(Dataset):
             self._create_validation_subset()
         
         # Calculate stats using all training data
-        mean, std = self._calculate_dataset_stats()
-        self.mean = mean.tolist()
-        self.std = std.tolist()
+        # mean, std = self._calculate_dataset_stats()
+        self.mean = [0.485, 0.456, 0.406]
+        self.std = [0.229, 0.224, 0.225]
         
         print(f"Using mean: {self.mean}")
         print(f"Using std: {self.std}")
@@ -153,24 +156,24 @@ class SEAMEDataset(Dataset):
             if label < len(self.class_names):
                 print(f"  {self.class_names[label]}: {count} images")
     
-    def _calculate_dataset_stats(self):
-        """Calculate mean and std for this specific dataset"""
-        # Create a temporary dataset with basic transforms for stats calculation
-        temp_transform = transforms.Compose([
-            transforms.ToPILImage(),
-            transforms.Resize((self.height, self.width)),
-            transforms.ToTensor()
-        ])
+    # def _calculate_dataset_stats(self):
+    #     """Calculate mean and std for this specific dataset"""
+    #     # Create a temporary dataset with basic transforms for stats calculation
+    #     temp_transform = transforms.Compose([
+    #         transforms.ToPILImage(),
+    #         transforms.Resize((self.height, self.width)),
+    #         transforms.ToTensor()
+    #     ])
         
-        temp_dataset = SEAMETempDataset(self.all_images, temp_transform)
-        temp_loader = torch.utils.data.DataLoader(
-            temp_dataset, 
-            batch_size=32, 
-            shuffle=False,
-            num_workers=2
-        )
+    #     temp_dataset = SEAMETempDataset(self.all_images, temp_transform)
+    #     temp_loader = torch.utils.data.DataLoader(
+    #         temp_dataset, 
+    #         batch_size=32, 
+    #         shuffle=False,
+    #         num_workers=2
+    #     )
         
-        return get_mean_std(temp_loader)
+    #     return get_mean_std(temp_loader)
             
     def __len__(self):
         return len(self.images)
@@ -190,22 +193,22 @@ class SEAMEDataset(Dataset):
         return image, label
 
 
-class SEAMETempDataset(torch.utils.data.Dataset):
-    """Temporary dataset for calculating statistics"""
-    def __init__(self, image_paths, transform):
-        self.image_paths = image_paths
-        self.transform = transform
+# class SEAMETempDataset(torch.utils.data.Dataset):
+#     """Temporary dataset for calculating statistics"""
+#     def __init__(self, image_paths, transform):
+#         self.image_paths = image_paths
+#         self.transform = transform
     
-    def __len__(self):
-        return len(self.image_paths)
+#     def __len__(self):
+#         return len(self.image_paths)
     
-    def __getitem__(self, idx):
-        img_path = self.image_paths[idx]
-        image = cv2.imread(img_path)
-        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+#     def __getitem__(self, idx):
+#         img_path = self.image_paths[idx]
+#         image = cv2.imread(img_path)
+#         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         
-        if self.transform:
-            image = self.transform(image)
+#         if self.transform:
+#             image = self.transform(image)
         
-        return image, 0  # Dummy label for stats calculation
+#         return image, 0  # Dummy label for stats calculation
     
