@@ -108,9 +108,33 @@ class GTSRBDataset(torch.utils.data.Dataset):
         if is_train:
             self.transform = A.Compose([
                 A.Resize(height=height, width=width),
-                A.HorizontalFlip(p=0.5),
-                A.ShiftScaleRotate(shift_limit=0.05, scale_limit=0.05, rotate_limit=10, p=0.5),
-                A.RandomBrightnessContrast(p=0.5),
+                
+                # Geometric augmentations
+                A.HorizontalFlip(p=0.3),  # Reduced - some signs are not symmetric
+                A.ShiftScaleRotate(shift_limit=0.1, scale_limit=0.1, rotate_limit=15, p=0.7),
+                A.Perspective(scale=(0.05, 0.1), p=0.3),  # Simulates viewing angle changes
+                A.Affine(shear=(-10, 10), p=0.3),         # Slight shearing
+                
+                # Color/lighting augmentations  
+                A.RandomBrightnessContrast(brightness_limit=0.2, contrast_limit=0.2, p=0.6),
+                A.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.1, p=0.5),
+                A.RandomGamma(gamma_limit=(80, 120), p=0.3),
+                A.CLAHE(clip_limit=2.0, p=0.3),          # Enhances contrast locally
+                
+                # Weather/lighting simulation
+                A.RandomShadow(p=0.2),                    # Simulates shadows
+                A.RandomFog(fog_coef_lower=0.1, fog_coef_upper=0.3, p=0.1),
+                A.RandomRain(p=0.1),                      # Light rain effect
+                A.RandomSunFlare(p=0.1),                  # Sun glare
+                
+                # Noise and blur
+                A.GaussNoise(var_limit=(10, 50), p=0.2),
+                A.MotionBlur(blur_limit=3, p=0.2),       # Camera shake
+                A.GaussianBlur(blur_limit=3, p=0.1),
+                
+                # Occlusion simulation
+                A.CoarseDropout(max_holes=2, max_height=8, max_width=8, p=0.2),  # Small occlusions
+                
                 A.Normalize(mean=self.mean, std=self.std),
                 ToTensorV2()
             ])
