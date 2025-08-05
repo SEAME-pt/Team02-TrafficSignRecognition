@@ -96,7 +96,7 @@ def train_model(model, train_loader, criterion, optimizer, device, epochs=10):
         #     best_val_acc = avg_val_acc
         #     best_val_loss = avg_val_loss
         #     print(f'  Validation accuracy improved! Saving model...')
-        torch.save(model.state_dict(), f'Models/traffic_signs/best_modelSEAME_epoch_{epoch+1}.pth')
+        torch.save(model.state_dict(), f'Models/traffic_signs/best_model_SEAME2_epoch_{epoch+1}.pth')
         
         # # Also save every 10 epochs
         # if (epoch + 1) % 10 == 0:

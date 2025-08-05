@@ -22,7 +22,7 @@ def main():
         device = torch.device("cpu")
         print("Using CPU")
 
-    input_size = (60, 60)
+    input_size = (80, 80)
 
     GTSRB_config = {
         'img_dir': '/home/luis_t2/SEAME/TrafficSign_LightDataset',
@@ -70,8 +70,8 @@ def main():
     # )
     
     # Initialize model
-    model = ClassificationNet(num_classes=9).to(device)
-    model.load_state_dict(torch.load('Models/traffic_signs/best_model_epoch_75.pth'))
+    model = ClassificationNet(num_classes=10).to(device)
+    model.load_state_dict(torch.load('Models/traffic_signs/best_model2_epoch_75.pth'))
     criterion = nn.CrossEntropyLoss()
     # optimizer = optim.Adam(model.parameters(), lr=1.5e-4)
     optimizer = optim.Adam(model.parameters(), lr=1.e-5, weight_decay=1e-4)

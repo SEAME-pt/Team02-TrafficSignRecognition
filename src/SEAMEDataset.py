@@ -29,7 +29,7 @@ class SEAMEDataset(Dataset):
             "Traffic Green",     # 6
             "Traffic Red",       # 7
             "Traffic Yellow",    # 8
-            # "Unknown"            # 6
+            "Unknown"            # 9
         ]
 
 

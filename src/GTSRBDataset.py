@@ -38,20 +38,19 @@ class GTSRBDataset(torch.utils.data.Dataset):
             18,  # General caution (danger)
             27,  # Pedestrians (crosswalk)
             28,  # Children crossing (crosswalk variant)
-            # # Unknown class using other GTSRB classes as negative examples
-            # 0,   # Speed limit (20km/h) - as unknown
-            # 1,   # Speed limit (30km/h) - as unknown
-            # 3,   # Speed limit (60km/h) - as unknown
-            # 4,   # Speed limit (70km/h) - as unknown
-            # 7,   # Speed limit (100km/h) - as unknown
-            # 8,   # Speed limit (120km/h) - as unknown
-            # 9,   # No passing - as unknown
-            # 10,  # No passing vehicles over 3.5 tons - as unknown
-            # 11,  # Right-of-way at intersection - as unknown
-            # 12,  # Priority road - as unknown
             43,  # Green
             44,  # Red
-            45   # Yellow
+            45,  # Yellow
+            0,   # Speed limit (20km/h) - as unknown
+            1,   # Speed limit (30km/h) - as unknown
+            3,   # Speed limit (60km/h) - as unknown
+            4,   # Speed limit (70km/h) - as unknown
+            7,   # Speed limit (100km/h) - as unknown
+            8,   # Speed limit (120km/h) - as unknown
+            9,   # No passing - as unknown
+            10,  # No passing vehicles over 3.5 tons - as unknown
+            11,  # Right-of-way at intersection - as unknown
+            12,  # Priority road - as unknown
         ]
         
         # Map classes to your specific categories
@@ -63,11 +62,19 @@ class GTSRBDataset(torch.utils.data.Dataset):
             18: 4,  # General caution (danger)
             27: 5,  # Pedestrians (crosswalk)
             28: 5,  # Children crossing (also crosswalk) - same as pedestrians
-            # All others map to unknown class
-            # 0: 6, 1: 6, 3: 6, 4: 6, 7: 6, 8: 6, 9: 6, 10: 6, 11: 6, 12: 6,  # Unknown
-            43: 6,
-            44: 7,
-            45: 8
+            43: 6,  # Traffic Green
+            44: 7,  # Traffic Red
+            45: 8,  # Traffic Yellow
+            0: 9, 
+            1: 9,
+            3: 9,
+            4: 9,
+            7: 9,
+            8: 9,
+            9: 9,
+            10: 9,
+            11: 9,
+            12: 9,  # Unknown
         }
         
         # Class names for reference
@@ -78,10 +85,10 @@ class GTSRBDataset(torch.utils.data.Dataset):
             "Stop",              # 3
             "Danger",            # 4
             "Crosswalk",         # 5
-            # "Unknown",           # 6
             "Traffic Green",     # 6
             "Traffic Red",       # 7
-            "Traffic Yellow"     # 8
+            "Traffic Yellow",     # 8
+            "Unknown",           # 9
         ]
 
 
@@ -199,25 +206,6 @@ class GTSRBDataset(torch.utils.data.Dataset):
         print(f"Loaded {len(self.images)} test images from {len(unique_labels)} classes:")
         for label, count in zip(unique_labels, counts):
             print(f"  {self.class_names[label]}: {count} images")
-    
-    # def _calculate_dataset_stats(self):
-    #     """Calculate mean and std for this specific dataset"""
-    #     # Create a temporary dataset with basic transforms for stats calculation
-    #     temp_transform = transforms.Compose([
-    #         transforms.ToPILImage(),
-    #         transforms.Resize((self.height, self.width)),
-    #         transforms.ToTensor()
-    #     ])
-        
-    #     temp_dataset = GTSRBTempDataset(self.images, temp_transform)
-    #     temp_loader = torch.utils.data.DataLoader(
-    #         temp_dataset, 
-    #         batch_size=32, 
-    #         shuffle=False,
-    #         num_workers=2
-    #     )
-        
-    #     return get_mean_std(temp_loader)
             
     def __len__(self):
         return len(self.images)
@@ -235,23 +223,3 @@ class GTSRBDataset(torch.utils.data.Dataset):
         image = transformed['image']
         
         return image, label
-
-
-# class GTSRBTempDataset(torch.utils.data.Dataset):
-#     """Temporary dataset for calculating statistics"""
-#     def __init__(self, image_paths, transform):
-#         self.image_paths = image_paths
-#         self.transform = transform
-    
-#     def __len__(self):
-#         return len(self.image_paths)
-    
-#     def __getitem__(self, idx):
-#         img_path = self.image_paths[idx]
-#         image = cv2.imread(img_path)
-#         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-        
-#         if self.transform:
-#             image = self.transform(image)
-        
-#         return image, 0  # Dummy label for stats calculation

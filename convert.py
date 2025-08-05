@@ -19,13 +19,13 @@ else:
     print("Using CPU")
 
 # Load the trained model
-model = ClassificationNet(num_classes=9).to(device)
-model.load_state_dict(torch.load('Models/traffic_signs/best_modelSEAME_epoch_99.pth', map_location=device))
+model = ClassificationNet(num_classes=10).to(device)
+model.load_state_dict(torch.load('Models/traffic_signs/best_model_SEAME2_epoch_100.pth', map_location=device))
 model.eval()
 
-dummy_input = torch.randn(1, 3, 60, 60).to(device)  # Updated for 30x30 traffic sign input
+dummy_input = torch.randn(1, 3, 80, 80).to(device)  # Updated for 30x30 traffic sign input
 
-onnx_file_path = "Models/onnx/traffic_sign_model2.onnx"
+onnx_file_path = "Models/onnx/traffic_sign_model3.onnx"
 torch.onnx.export(
     model,                       # PyTorch model instance
     dummy_input,                 # Input to the model
