@@ -102,6 +102,13 @@ To convert a trained PyTorch model to ONNX format for deployment:
 python convert.py
 ```
 
+### Converting to .engine
+To convert an ONNX model to TensorRT engine format optimized for the target GPU, run:
+```bash
+/usr/src/tensorrt/bin/trtexec --onnx=onnx/traffic_sign_model.onnx --saveEngine=engine/traffic_sign_detection_model.engine --fp16
+```
+
+
 ## Datasets
 
 The system supports multiple datasets:
